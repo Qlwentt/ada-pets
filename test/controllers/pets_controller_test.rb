@@ -37,4 +37,34 @@ class PetsControllerTest < ActionController::TestCase
     body = JSON.parse(response.body)
     assert_equal keys, body.map(&:keys).flatten.uniq.sort
   end
+
+  test "returns the first pet object" do
+    get :show, id: pets(:one)
+    body = JSON.parse(response.body)
+    assert_equal Hash, body.class
+    assert_response :success
+  end
+
+  test "#show returns json" do
+    get :show, id: pets(:one)
+    assert_match 'application/json', response.header['Content-Type']
+  end
+
+  test "#show with a real id gives an ok response" do
+    get :show, id: pets(:one)
+    assert_response :ok
+  end
+
+  test "#show with a real id gives no content response" do
+    get :show, id: 1
+    assert_response :no_content
+  end
+
+  test "returns the current pet" do
+    get :show, id: pets(:one)
+    body = JSON.parse(response.body)
+    assert_equal body["name"], "Peanut"
+    assert_response :success
+  end
+
 end
